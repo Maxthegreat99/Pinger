@@ -1,6 +1,8 @@
 ﻿using System.Reflection;
 using System.Timers;
 using Terraria;
+using Terraria.GameContent.NetModules;
+using Terraria.Net;
 using TerrariaApi.Server;
 using TShockAPI;
 
@@ -141,35 +143,18 @@ namespace Pinger
                 || !CanPluginPing()) 
                 return;
 
-            foreach (TSPlayer player in TShock.Players.Where(i => i != null
+            foreach (var position in TShock.Players.Where(i => i != null
                                                                  && i.Active
                                                                  && !i.TPlayer.ghost)
-                   )
+                                                                 .Select(i => i.TPlayer.position)
+                    )
             {
-                Main.TriggerPing(player.LastNetPosition);
-                
-                Main.Pings.Add
+               
+                Main.Pings.Add(new Microsoft.Xna.Framework.Vector2(position.X / 16, position.Y / 16));
 
-                Main.TriggerPing(new Microsoft.Xna.Framework.Vector2(player.LastNetPosition.X * 16, player.LastNetPosition.Y * 16));
+                var packet = NetPingModule.Serialize(new(position.X /16, position.Y / 16));
 
-                player.SendSuccessMessage("uhg");
-
-                var packet = new PacketFactory()
-                        .SetType(82)
-                        .PackUInt16(2)
-                        .PackSingle(player.LastNetPosition.X * 16)
-                        .PackSingle(player.LastNetPosition.Y * 16)
-                        .GetByteData();
-
-                var packet2 = new PacketFactory()
-                        .SetType(82)
-                        .PackUInt16(2)
-                        .PackSingle(player.LastNetPosition.X )
-                        .PackSingle(player.LastNetPosition.Y )
-                        .GetByteData();
-
-                TSPlayer.All.SendRawData(packet);
-                TSPlayer.All.SendRawData(packet2);
+                NetManager.Instance.Broadcast(packet);
             }
         }
 
