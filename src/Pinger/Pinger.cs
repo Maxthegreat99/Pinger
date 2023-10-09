@@ -9,44 +9,43 @@ using TShockAPI.Hooks;
 
 namespace Pinger
 {
-    /*                          * The Pinger Plugin *
-     * Description: A plugin made for HC mini-games or other mini-games of the type.
-     * The plugin has also been explicitly documented in order to help beginners
-     * learn TShock. If you want to help with the documentation
-     * or add to the plugin feel free to PR at https://github.com/Maxthegreat99/Pinger
-     * or to whoever is currently maintaining the project
-     */
+    /* Pinger Plugin *
+     Description: A plugin designed for HC mini-games or similar types of mini-games.
+     The plugin is well-documented to assist beginners in learning TShock.
+     If you would like to contribute to the documentation or suggest improvements,
+     please submit a PR at https://github.com/Maxthegreat99/Pinger
+     or contact the current project maintainer. */
 
-    /* A tag specifying the version of TSAPI the plugin
-     * uses, the tag is required for the plugin to work. 
-     */
+    /* Plugin TSAPI Version Tag *
+     This tag specifies the version of TSAPI that the plugin uses.
+     It is required for the plugin to function properly. */
     [ApiVersion(2, 1)]
     public class Pinger : TerrariaPlugin
     {
         /***** Plugin Properties *****/
 
         /// <summary>
-        /// This appears on startup, contains name(s) 
-        /// of the the author(s) maintaining project.
+        /// This is displayed on startup and includes the name(s)
+        /// of the author(s) maintaining the project.
         /// </summary>
         public override string Author => "Maxthegreat99";
 
         /// <summary>
-        /// A short description of what the plugin does.
+        /// Brief description of the plugin's functionality.
         /// </summary>
         public override string Description => "A plugin conceived for HC minigames, that pings" +
                                " players once a number of them are left alive.";
 
         /// <summary>
-        /// The name of your plugin (also appears on startup).
+        /// The name of your plugin, which is also displayed on startup.
         /// </summary>
         public override string Name => "Pinger";
 
-         /// <summary>
-         /// the current state of the plugin, its recommended
-         /// to follow a convention when updating your plugins, 
-         /// example: https://semver.org
-         /// </summary>
+        /// <summary>
+        /// The current state of the plugin.
+        /// It is recommended to follow a versioning convention when updating plugins,
+        /// such as using Semantic Versioning (https://semver.org).
+        /// </summary>
         public override Version Version => Assembly.GetExecutingAssembly().GetName().Version; /* you can also use new Version(X.Y.Z) */
 
         /***** Plugin Variables *****/
@@ -54,18 +53,17 @@ namespace Pinger
         private static string configPath = Path.Combine(TShock.SavePath, "PingerPlugin.json");
         
         /// <summary>
-        /// The plugin's configurations, see Config.cs 
+        /// The plugin's configurations. Please refer to the Config.cs file for more information.
         /// </summary>
         private static PingerConfigs Configs { get; set; } = new PingerConfigs();
 
         /// <summary>
-        /// Included before each message the plugin sends
-        /// to specify from where the message is from.
+        /// The tag that is included at the start of every message sent by the plugin to specify its source.
         /// </summary>
         private const string messageTag = "[Pinger] ";
 
         /// <summary>
-        /// Enum types defining how the plugin checks for if it should ping or not.
+        /// Enum types that define the criteria for the plugin to determine whether it should perform a ping or not.
         /// </summary>
         private enum PingRequirementTypes
         {
@@ -75,23 +73,27 @@ namespace Pinger
         }
 
         /// <summary>
-        /// The type variable itself and the value associated 
-        /// to when it should ping the players
+        /// The variable that represents the type of ping requirement and the associated value
+        /// for when the players should be pinged.
         /// </summary>
         private static PingRequirementTypes pingRequirementType;
 
         private static int pingRequirementValue;
 
+        /// <summary>
+        /// The timer used to periodically ping players. 
+        /// It should be disposed when the plugin shuts down.
+        /// </summary>
         private static System.Timers.Timer pingTimer { get; set; }
 
         public Pinger(Main game) : base(game)
         {
-            /* you can define when the plugin 
-             * will load (order) here */
+            // You may optionally define the 
+            // load order of the plugin here.
         }
 
         /// <summary>
-        /// Stores the plugin's permissions
+        /// The plugin's permissions
         /// </summary>
         private static class Permissions
         {
@@ -101,26 +103,24 @@ namespace Pinger
         }
 
         /// <summary>
-        /// Executes initialization logic (Hook registering,
-        /// Command adding, Config loading)
+        /// Performs initialization tasks such as registering hooks,
+        /// adding commands, and loading configuration
         /// </summary>
         public override void Initialize()
         {
             /* Hooks:
-             * You can make your plugins listen to hooks from `ServerApi.Hooks` 
-             * and `TShockAPI.Hooks` in order for them to execute code
-             * when the said hooks are fired. Note that `TShockAPI.Hooks` uses
-             * events(built into c#) for hooks instead of registering/deregistering.
+             * You can make your plugins listen to hooks from `ServerApi.Hooks`
+             * and `TShockAPI.Hooks` to execute code when the hooks are fired.
+             * Note that `TShockAPI.Hooks uses` events for hooks instead of registering/deregistering.
              * Read more: https://tshock.readme.io/docs/hooks, 
              *            https://github.com/TShockResources/ServerHooksExample 
              */
 
-            /* Makes `OnInitialize` execute when every other plugin 
-             * and TShock itself finished loading(GameInitilize) */
+            /* Register the `OnInitialize` method to execute after 
+            all other plugins and TShock finish loading (GameInitialize) */
             ServerApi.Hooks.GameInitialize.Register(this, OnInitialize);
 
-            /* Use of GeneralHooks from `TShockAPI.Hooks, note
-             * the use of events here. */
+            // Using GeneralHooks from `TShockAPI.Hooks`, events are utilized here.
             GeneralHooks.ReloadEvent += OnReload;
 
             /* Commands:
@@ -144,14 +144,15 @@ namespace Pinger
                 "pingerreload", "pingreload", "reloadping"));
         }
         /// <summary>
-        /// Called when the plugin is destroyed
-        /// or when the server is shut down, is used
-        /// to dispose the plugin's resources and deregister hooks.
+        /// Called when the plugin is destroyed or when the server is shut down.
+        /// Used to dispose the plugin's resources and deregister hooks.
         /// </summary>
         /// <param name="disposing"></param>
 
         protected override void Dispose(bool disposing)
         {
+         /* If the plugin isn't disposing, we let `base.Dispose()` handle the work.
+            Otherwise, we perform our job and let `base.Dispose()` finish. */
             if (!disposing)
             {
                 base.Dispose(disposing);
@@ -159,7 +160,7 @@ namespace Pinger
             }
 
             ServerApi.Hooks.GameInitialize.Deregister(this, OnInitialize);
-
+            
             GeneralHooks.ReloadEvent -= OnReload;
 
             if (Configs.Settings.Enabled)
@@ -262,8 +263,8 @@ namespace Pinger
         }
 
         /// <summary>
-        /// Logic executed when the timer is elapsed,
-        /// creates a ping at every currently alive players' positions
+        /// Logic executed when the timer is elapsed.
+        /// Creates a ping at the position of each currently alive player
         /// and notifies everyone.
         /// </summary>
         /// <param name="sender"></param>
@@ -283,12 +284,12 @@ namespace Pinger
             {
 
                 /* Packets:
-                 * packets can be sent from the player or from the server, some are used to
-                 * sync the data between both(look at: https://tshock.readme.io/docs/multiplayer-packet-structure),
-                 * here we want to notify everyone about a new ping getting created, fortunately thats a special
-                 * type of packet(https://tshock.readme.io/docs/multiplayer-packet-structure#net-modules)
-                 * that can be created by simply using `Terraria.GameContent.NetModules` then we can directly send it to everyone with
-                 * `NetManager.Instance.Broadcast(packet)`, other ways to send packets are `NetMessage.SendData()`, `TSPlayer.SendData()`
+                 * Packets are pieces of data the clients or the server send between each other to sync data 
+                 * or notify change(list of packets: https://tshock.readme.io/docs/multiplayer-packet-structure),
+                 * here we want to notify the clients about a new ping getting created.
+                 * We can achieve this by using a special type of packet that can be created with `Terraria.GameContent.NetModules`.
+                 * The packet can then be sent to everyone with `NetManager.Instance.Broadcast(packet)`.
+                 * Other ways to send packets include `NetMessage.SendData()`, `TSPlayer.SendData()`,
                  * and PacketFactories + `TSPlayer.SendRawData()`(https://github.com/Maxthegreat99/PacketFactory). 
                  * Read more: https://tshock.readme.io/docs/multiplayer-packet-structure,
                  *            https://github.com/TShockResources/LavaSucks/blob/master/LavaSucks/LavaSucks.cs,
@@ -299,9 +300,13 @@ namespace Pinger
                 /* initiate the change on the server first */
                 Main.Pings.Add(new Microsoft.Xna.Framework.Vector2(position.X / 16, position.Y / 16));
 
-                /* create a packet using Terraria.GameContent.NetModules.NetPingModule */
-                var packet = NetPingModule.Serialize(new(position.X /16, position.Y / 16)); 
-                /*                         ^ The method transforms the vector2 into data that can be sent
+                /* create a packet using Terraria.GameContent.NetModules.NetPingModule. 
+                 * The method only requires the position at which we want the
+                 * ping to appear, the PacketType, Size, etc... are handled by the method here.
+                 * Note: we are deviding the player's position by 16 as it is currently in pixels,
+                 * while the packet requires the ping position in tiles. */
+                var packet = NetPingModule.Serialize(new(position.X / 16, position.Y / 16 ));
+                /*                         ^ The method transforms the Vector2 into data that can be sent
                  *                           easily via network(byte[]) then creates a packet that can be
                  *                           understood by the receivers */
              
@@ -347,14 +352,14 @@ namespace Pinger
 
         /***** Commands *****/
 
+
         /* Commands:
-         * TShock only gives you the sender and the parameters as
-         * context(args) for your commands which is quite enough as this allows
-         * you to make sub commands or even as sub-sub commands(macro-sub commands?)
-         * for your commands, but of course of you have to handle the input of each 
-         * parameter to make sure that the input is in the right type in order to manipulate it. it is  
-         * even possible to make your commands send other commands(Commands.HandleCommand(player,text)). 
-         * Plugin Using Commands: https://github.com/Maxthegreat99/CustomItems
+         * TShock provides the sender and the parameters as context (args) for your commands.
+         * This gives to create sub-commands or even further nested commands (macro-sub commands)
+         * for your plugin. However, it is important to handle the input of each parameter to ensure
+         * that the input is in the correct type for manipulation. It is even possible to make your commands
+         * send other commands using `Commands.HandleCommand(player, text)`.
+         * Example Plugin: https://github.com/Maxthegreat99/CustomItems
          */
 
         /// <summary>
