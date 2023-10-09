@@ -39,3 +39,4 @@ namespace Pinger
     /*                           ^ the config file class from `TShockAPI.Configuration` simplifies
      *                             the process of reading, writing and implementing our default configurations
      */
+}
