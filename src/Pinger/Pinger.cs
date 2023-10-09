@@ -12,9 +12,9 @@ namespace Pinger
     /*                          * The Pinger Plugin *
      * Description: A plugin made for HC mini-games or other mini-games of the type.
      * The plugin has also been explicitly documented in order to help beginners
-     * wanting to learn how to use TShock. If you want to help with the documentation
+     * learn how to use TShock. If you want to help with the documentation
      * or add to the plugin feel free to PR at https://github.com/Maxthegreat99/Pinger
-     * or whoever to is currently maintaining the project
+     * or to whoever is currently maintaining the project
      */
 
     /* Tag specifying the version
@@ -32,7 +32,7 @@ namespace Pinger
         public override string Author => "Maxthegreat99";
 
         /// <summary>
-        /// A very short description of what the plugin does.
+        /// A short description of what the plugin does.
         /// </summary>
         public override string Description => "A plugin conceived for HC minigames, that pings" +
                                " players once a number of them are left alive.";
@@ -102,14 +102,14 @@ namespace Pinger
 
         /// <summary>
         /// Executes initialization logic (Hook registering,
-        /// Command adding, config loading)
+        /// Command adding, Config loading)
         /// </summary>
         public override void Initialize()
         {
             /* Hooks:
-             * `ServerApi.Hooks` or `TShockAPI.Hooks`, both have very
-             * useful hooks you can make your plugins listen to in order to
-             * execute code when the hooks are fired. Note `TShockAPI.Hooks` uses
+             * You can make you plugins list to hooks from `ServerApi.Hooks` 
+             * and `TShockAPI.Hooks` in order for them to execute code
+             * when the said hooks are fired. Note that `TShockAPI.Hooks` uses
              * events(built into c#) for hooks instead of registering/deregistering.
              * Read more: https://tshock.readme.io/docs/hooks, 
              *            https://github.com/TShockResources/ServerHooksExample 
@@ -125,13 +125,12 @@ namespace Pinger
 
             /* Commands:
              * Here we are adding our commands into TShock,
-             * We are creating a new command with the permission
-             * and its name / aliases, optionally we can add a list
+             * we are creating new commands with its permissions
+             * and its names / aliases, optionally we can add a list
              * of permissions instead of one or define the plugin's
              * HelpText as well as other properties by adding
-             * and object initializer. 
-             * Read more: https://github.com/TShockResources/LavaSucks
-             *            
+             * an object initializer. 
+             * Read more: https://github.com/TShockResources/LavaSucks         
              */
 
             Commands.ChatCommands.Add(new Command(
@@ -180,7 +179,7 @@ namespace Pinger
         /// executes config loading logic.
         /// </summary>
         /// <param name="args"></param>
-        private static void OnInitialize(/* note the event args -->*/EventArgs args)
+        private static void OnInitialize(/* note the EventArgs parameter --> */EventArgs args)
         {
             LoadConfigs();
         }
@@ -195,13 +194,13 @@ namespace Pinger
         }
 
         /// <summary>
-        /// Config loading logic, the configs use TShockAPI.Configuration.
+        /// Config loading logic, the configs use TShockAPI.Configuration
+        /// to facilitate Read&Write / loading default configs.
         /// </summary>
         private static void LoadConfigs()
         {
-            /* the file doesn't exist or if the
-             * file is missing configuration we are
-             * adding them / creating a new config file */
+            /* if the file doesn't exist or is missing 
+             * configuration we are adding them / creating a new config file */
 
             bool writeConfig = true;
             if (File.Exists(configPath))
@@ -264,8 +263,8 @@ namespace Pinger
 
         /// <summary>
         /// Logic executed when the timer is elapsed,
-        /// create a ping at every currently alive players' positions
-        /// and notify everyone.
+        /// creates a ping at every currently alive players' positions
+        /// and notifies everyone.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -284,23 +283,23 @@ namespace Pinger
             {
 
                 /* Packets:
-                 * There are multiple ways to send packets, packets can be sent from the player or from the server
-                 * some having the use to sync data between both(look at: https://tshock.readme.io/docs/multiplayer-packet-structure),
-                 * here we want to notify a packet about a new ping getting created,fortunately thats a special
+                 * packets can be sent from the player or from the server some even
+                 * syncing the data between both(look at: https://tshock.readme.io/docs/multiplayer-packet-structure),
+                 * here we want to notify everyone about a new ping getting created, fortunately thats a special
                  * type of packet(https://tshock.readme.io/docs/multiplayer-packet-structure#net-modules)
-                 * that can be created by simply using `Terraria.GameContent.NetModules` then directly sent to everyone with
-                 * NetManager.Instance.Broadcast(packet), other ways to send packets are NetMessage.SendData(), TSPlayer.SendData()
-                 * and PacketFactories + TSPlayer.SendRawData()(https://github.com/Maxthegreat99/PacketFactory). 
+                 * that can be created by simply using `Terraria.GameContent.NetModules` then we can directly send it to everyone with
+                 * `NetManager.Instance.Broadcast(packet)`, other ways to send packets are `NetMessage.SendData()`, `TSPlayer.SendData()`
+                 * and PacketFactories + `TSPlayer.SendRawData()`(https://github.com/Maxthegreat99/PacketFactory). 
                  * Read more: https://tshock.readme.io/docs/multiplayer-packet-structure,
                  *            https://github.com/TShockResources/LavaSucks/blob/master/LavaSucks/LavaSucks.cs,
-                 * repo using SendData() Example: https://github.com/Maxthegreat99/Ghost2
-                 * repo using GetData() Example:  https://github.com/Maxthegreat99/MapTeleport
+                 * repo using `SendData()` Example: https://github.com/Maxthegreat99/Ghost2
+                 * repo using `GetData()` Example:  https://github.com/Maxthegreat99/MapTeleport
                  */
 
                 /* initiate the change on the server first */
                 Main.Pings.Add(new Microsoft.Xna.Framework.Vector2(position.X / 16, position.Y / 16));
 
-                /* create a packet usingTerraria.GameContent.NetModules.NetPingModule */
+                /* create a packet using Terraria.GameContent.NetModules.NetPingModule */
                 var packet = NetPingModule.Serialize(new(position.X /16, position.Y / 16)); 
                 /*                         ^ The method transforms the vector2 into data that can be sent
                  *                           easily via network(byte[]) then creates a packet that can be
@@ -349,13 +348,13 @@ namespace Pinger
         /***** Commands *****/
 
         /* Commands:
-         * TShock only give you the sender and the parameters as
-         * context(args) for your commands which is quite enough, this allows
-         * you to make sub commands as well as sub-sub commands(macro-sub commands?)
+         * TShock only gives you the sender and the parameters as
+         * context(args) for your commands which is quite enough as this allows
+         * you to make sub commands or even as sub-sub commands(macro-sub commands?)
          * for your commands, at the cost of course of having to handle the input of each 
-         * parameter making sure the data is in the right type, it is even possible to 
-         * make your commands send other commands(Commands.HandleCommand(player,text)). 
-         * Example: https://github.com/Maxthegreat99/CustomItems
+         * parameter making sure the data is in the right type to manipulate it, it is  
+         * even possible to make your commands send other commands(Commands.HandleCommand(player,text)). 
+         * Read More: https://github.com/Maxthegreat99/CustomItems
          */
 
         /// <summary>
