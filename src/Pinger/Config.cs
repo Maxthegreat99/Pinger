@@ -4,7 +4,7 @@ namespace Pinger
 {
     /// <summary>
     /// The general config layout as well
-    /// as the default configs.
+    /// as its default configs.
     /// </summary>
     public class Config
     {
@@ -14,7 +14,7 @@ namespace Pinger
         public bool Enabled = true;
 
         /// <summary>
-        /// The way its going to check for if it should
+        /// The way the plugin is going to check for if it should
         /// ping the players currently alive or not.
         /// </summary>
         public string PingRequirementType = "PlayersAlive";
@@ -25,7 +25,7 @@ namespace Pinger
         public int PingRequirementValue = 5;
 
         /// <summary>
-        /// The time interval in seconds that the plugin
+        /// The time interval in seconds at which the plugin
         /// shall ping the players.
         /// </summary>
         public int PingIntervalSec = 5;
@@ -33,8 +33,7 @@ namespace Pinger
     }
 
     /// <summary>
-    /// the class to implement the layout and
-    /// default configs.
+    /// the class to implement the layout / default configs.
     /// </summary>
     public class PingerConfigs : ConfigFile<Config> { }
 }
