@@ -12,13 +12,13 @@ namespace Pinger
     /*                          * The Pinger Plugin *
      * Description: A plugin made for HC mini-games or other mini-games of the type.
      * The plugin has also been explicitly documented in order to help beginners
-     * learn how to use TShock. If you want to help with the documentation
+     * learn TShock. If you want to help with the documentation
      * or add to the plugin feel free to PR at https://github.com/Maxthegreat99/Pinger
      * or to whoever is currently maintaining the project
      */
 
-    /* Tag specifying the version
-     * of TSAPI, required for the plugin to work. 
+    /* A tag specifying the version of TSAPI the plugin
+     * uses, the tag is required for the plugin to work. 
      */
     [ApiVersion(2, 1)]
     public class Pinger : TerrariaPlugin
@@ -26,8 +26,8 @@ namespace Pinger
         /***** Plugin Properties *****/
 
         /// <summary>
-        /// This appears on startup, contains the author(s) 
-        /// maintaining project.
+        /// This appears on startup, contains name(s) 
+        /// of the the author(s) maintaining project.
         /// </summary>
         public override string Author => "Maxthegreat99";
 
@@ -107,7 +107,7 @@ namespace Pinger
         public override void Initialize()
         {
             /* Hooks:
-             * You can make you plugins list to hooks from `ServerApi.Hooks` 
+             * You can make your plugins listen to hooks from `ServerApi.Hooks` 
              * and `TShockAPI.Hooks` in order for them to execute code
              * when the said hooks are fired. Note that `TShockAPI.Hooks` uses
              * events(built into c#) for hooks instead of registering/deregistering.
@@ -120,12 +120,12 @@ namespace Pinger
             ServerApi.Hooks.GameInitialize.Register(this, OnInitialize);
 
             /* Use of GeneralHooks from `TShockAPI.Hooks, note
-             * the use of events. */
+             * the use of events here. */
             GeneralHooks.ReloadEvent += OnReload;
 
             /* Commands:
-             * Here we are adding our commands into TShock,
-             * we are creating new commands with its permissions
+             * Here we are adding our commands into TShock's ChatCommands
+             * list, we are creating new commands with its permissions
              * and its names / aliases, optionally we can add a list
              * of permissions instead of one or define the plugin's
              * HelpText as well as other properties by adding
@@ -145,7 +145,7 @@ namespace Pinger
         }
         /// <summary>
         /// Called when the plugin is destroyed
-        /// or that the server is shut down, is used
+        /// or when the server is shut down, is used
         /// to dispose the plugin's resources and deregister hooks.
         /// </summary>
         /// <param name="disposing"></param>
@@ -175,7 +175,7 @@ namespace Pinger
 
         /***** Plugin Hooks *****/
         /// <summary>
-        /// Called once TShock / Every plugins initialized,
+        /// Called once TShock / Every plugin initialized,
         /// executes config loading logic.
         /// </summary>
         /// <param name="args"></param>
@@ -283,8 +283,8 @@ namespace Pinger
             {
 
                 /* Packets:
-                 * packets can be sent from the player or from the server some even
-                 * syncing the data between both(look at: https://tshock.readme.io/docs/multiplayer-packet-structure),
+                 * packets can be sent from the player or from the server, some are used to
+                 * sync the data between both(look at: https://tshock.readme.io/docs/multiplayer-packet-structure),
                  * here we want to notify everyone about a new ping getting created, fortunately thats a special
                  * type of packet(https://tshock.readme.io/docs/multiplayer-packet-structure#net-modules)
                  * that can be created by simply using `Terraria.GameContent.NetModules` then we can directly send it to everyone with
@@ -351,10 +351,10 @@ namespace Pinger
          * TShock only gives you the sender and the parameters as
          * context(args) for your commands which is quite enough as this allows
          * you to make sub commands or even as sub-sub commands(macro-sub commands?)
-         * for your commands, at the cost of course of having to handle the input of each 
-         * parameter making sure the data is in the right type to manipulate it, it is  
+         * for your commands, but of course of you have to handle the input of each 
+         * parameter to make sure that the input is in the right type in order to manipulate it. it is  
          * even possible to make your commands send other commands(Commands.HandleCommand(player,text)). 
-         * Read More: https://github.com/Maxthegreat99/CustomItems
+         * Plugin Using Commands: https://github.com/Maxthegreat99/CustomItems
          */
 
         /// <summary>
@@ -411,7 +411,7 @@ namespace Pinger
 
         /* If you have any questions you can message me on discord(fireball_2000) or
          * ask on the official Pyraxis discord(https://discord.gg/Cav9nYX)
-         * More resources: https://tshock.readme.io/docs/getting-started
+         * More Resources: https://tshock.readme.io/docs/getting-started
          *                 https://github.com/SignatureBeef/Open-Terraria-API/wiki/%5Bupcoming%5D-1.-About
          *                 https://github.com/pryaxis/tshock
          *                 https://github.com/TShockResources
