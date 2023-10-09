@@ -36,4 +36,6 @@ namespace Pinger
     /// the class to implement the layout / default configs.
     /// </summary>
     public class PingerConfigs : ConfigFile<Config> { }
-}
+    /*                           ^ the config file class from `TShockAPI.Configuration` simplifies
+     *                             the process of reading, writing and implementing our default configurations
+     */
