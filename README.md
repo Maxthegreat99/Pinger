@@ -24,7 +24,7 @@ This plugin is designed for Hardcore Challenge minigames or other PvP challenges
 - `PingIntervalSec` - The time interval in seconds at which the plugin should ping its players, for instance setting it to 10 shall create a ping on the server's alive players every 10 seconds.
 
 ### Default Configs
-These are the default configs, as you can see the `PingRequirementType` is set to `PlayersAlive` while `PingRequirementValue` and `PingIntervalSec` are set to `5`, this means that the plugin shall ping the server's currently-alive players once there are `5` or less players left alive every `5` seconds.
+Here are the default configs, as you can see the `PingRequirementType` field is set to `PlayersAlive` while `PingRequirementValue` and `PingIntervalSec` are both set to `5`, this means that the plugin shall ping the server's currently-alive players every `5` seconds once there are `5` or less players left alive.
 ```json
 {
   "Settings": {
